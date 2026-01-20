@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title> Pancake </title>
+    <title>Fluffy Pancake Viewer</title>
     <style>
         body {
             margin: 0;
@@ -97,7 +97,8 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-        import TWEEN from '@tweenjs/tween.js';
+        // Fix: Use "import * as TWEEN" to capture all named exports
+        import * as TWEEN from '@tweenjs/tween.js';
 
         // --- Configuration ---
         const MODEL_PATH = './model.glb';
@@ -263,7 +264,7 @@
         // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
-            TWEEN.update(); // Update Tween animations
+            if (TWEEN) TWEEN.update(); // Update Tween animations
             controls.update(); // Required if damping is enabled
             renderer.render(scene, camera);
         }
