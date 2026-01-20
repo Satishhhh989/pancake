@@ -82,12 +82,13 @@
         <div id="status-text" class="status-pill">Loading Fluffy Pancakes...</div>
     </div>
 
-    <!-- Import Map for Three.js (Modern way to handle imports without bundlers) -->
+    <!-- Import Map for Three.js and TWEEN -->
     <script type="importmap">
         {
             "imports": {
                 "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+                "@tweenjs/tween.js": "https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@23.1.1/dist/tween.esm.js"
             }
         }
     </script>
@@ -96,9 +97,10 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import TWEEN from '@tweenjs/tween.js';
 
         // --- Configuration ---
-        const MODEL_PATH = './fluffy_pancakes.glb';
+        const MODEL_PATH = './model.glb';
         
         // --- Scene Setup ---
         const container = document.getElementById('canvas-container');
@@ -194,11 +196,14 @@
                 
                 // Animate entry
                 model.rotation.y = Math.PI; 
-                new TWEEN.Tween(model.rotation).to({y: 0}, 1000).easing(TWEEN.Easing.Quadratic.Out).start();
+                new TWEEN.Tween(model.rotation)
+                    .to({y: 0}, 1000)
+                    .easing(TWEEN.Easing.Quadratic.Out)
+                    .start();
             },
             undefined, // onProgress
             (error) => {
-                console.warn("Could not load fluffy_pancakes.glb. Showing fallback model.", error);
+                console.warn("Could not load model.glb. Showing fallback model.", error);
                 createFallbackPancakes();
                 statusText.innerText = "Model file not found. Showing placeholder.";
             }
@@ -258,13 +263,8 @@
         // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
+            TWEEN.update(); // Update Tween animations
             controls.update(); // Required if damping is enabled
-            
-            // Slow auto-rotation if user isn't interacting
-            if(model && !controls.enableDamping) { 
-               // logic can be added here
-            }
-
             renderer.render(scene, camera);
         }
 
